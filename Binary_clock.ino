@@ -2,9 +2,9 @@
 int ticks = 0;
 int minutes = 0;
 int hours = 0;
-const int hourPins[] = {2, 3, 4, 5};
-const int minutePins[] = {6, 7, 8, 9, 10};
-const int secondPin = 11;
+const int hourPins[] = {2, 3, 4, 5, 6};
+const int minutePins[] = {7, 8, 9, 10, 11, 12};
+const int secondPin = 13;
 
 void setup() {
   // init hourPins
@@ -62,5 +62,6 @@ void pinOn(int pinNumber){
 void initOutputPin(int pinNumber){
      pinMode(pinNumber, OUTPUT);
      pinOn(pinNumber);
+     delay(100);
      pinOff(pinNumber);
 }
