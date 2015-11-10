@@ -1,18 +1,20 @@
+#include "TimerOne.h"
 int ticks = 0;
 int minutes = 0;
 int hours = 0;
-const int hourPins = {2, 3, 4, 5};
-const int minutePins = {6, 7, 8, 9, 10};
+const int hourPins[] = {2, 3, 4, 5};
+const int minutePins[] = {6, 7, 8, 9, 10};
 const int secondPin = 11;
 
 void setup() {
   // init hourPins
   // TODO: save sizeOf as variables
-  for (int i = 0; i < sizeOf(hourPins)/sizeOf(int)) - 1; i++){
-    initOutputPin(hourPins[i];
+  int i;
+  for (i = 0; i < (sizeof(hourPins)/sizeof(int)) - 1; i++){
+    initOutputPin(hourPins[i]);
    }
-  for (int i = 0; i < sizeOf(minutePins)/sizeOf(int)) - 1; i++){
-    initOutputPin(minutePins[i];
+  for (i = 0; i < (sizeof(minutePins)/sizeof(int)) - 1; i++){
+    initOutputPin(minutePins[i]);
    }
   initOutputPin(secondPin);
 }
@@ -29,13 +31,13 @@ void loop() {
       minutes = 0;
       if (hours < 24) {
        hours++;
-       else{
+      }else{
          hours = 0;
        }
       }
     }
    ticks = 0; 
-  }
+  
 }
 
 void toggleSecondPin(){
