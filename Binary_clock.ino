@@ -5,14 +5,17 @@ int hours = 0;
 const int hourPins[] = {2, 3, 4, 5};
 const int minutePins[] = {7, 8, 9, 10, 11};
 const int secondPin = 12;
+int amountOfMinutePins = 0;
+int amountOfHourPins = 0;
 
 void setup() {
-  // TODO: save sizeOf as variables
+  amountOfHourPins = sizeof(hourPins)/sizeof(int);
+  amountOfMinutePins = sizeof(minutePins)/sizeof(int);
   int i;
-  for (i = 0; i < (sizeof(hourPins)/sizeof(int)) ; i++){
+  for (i = 0; i < amountOfHourPins ; i++){
     initOutputPin(hourPins[i]);
    }
-  for (i = 0; i < (sizeof(minutePins)/sizeof(int)) ; i++){
+  for (i = 0; i < amountOfMinutePins ; i++){
     initOutputPin(minutePins[i]);
    }
   initOutputPin(secondPin);
@@ -44,17 +47,20 @@ void clockTick(){
 void updateClockDisplay(){
   String binMinutes = String(minutes, BIN);
   String binHours = String(hours, BIN);
+  int binLength;
   
   //TODO: general function for looping these arrays
-  for (int i = 0; i < 4; i++){
-    if (binMinutes[i] == '1'){
+  binLength = binMinutes.length();
+  for (int i = 0; i < amountOfMinutePins; i++){
+    if (binLength <= amountOfMinutePins && binMinutes[i] == '1'){
       pinOn(minutePins[i]);
     } else {
       pinOff(minutePins[i]); 
     }
   }
-  for (int i = 0; i < 5; i++){
-    if (binHours[i] == '1'){
+  binLength = binHours.length();
+  for (int i = 0; i < amountOfHourPins; i++){
+    if (binLength <= amountOfHourPins && binHours[i] == '1'){
       pinOn(hourPins[i]);
     } else {
       pinOff(hourPins[i]); 
