@@ -5,6 +5,7 @@ The clock itself is relatively simple, housed in a wooden frame, but I've made s
 
 Requirements: 
 - Arduino
+- [Timer1 library](http://playground.arduino.cc/Code/Timer1)
 - 10 LEDs
 - a button or two
 - LCD display
