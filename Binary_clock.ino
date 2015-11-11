@@ -2,42 +2,64 @@
 int ticks = 0;
 int minutes = 0;
 int hours = 0;
-const int hourPins[] = {2, 3, 4, 5, 6};
-const int minutePins[] = {7, 8, 9, 10, 11, 12};
-const int secondPin = 13;
+const int hourPins[] = {2, 3, 4, 5};
+const int minutePins[] = {7, 8, 9, 10, 11};
+const int secondPin = 12;
 
 void setup() {
-  // init hourPins
   // TODO: save sizeOf as variables
   int i;
-  for (i = 0; i < (sizeof(hourPins)/sizeof(int)) - 1; i++){
+  for (i = 0; i < (sizeof(hourPins)/sizeof(int)) ; i++){
     initOutputPin(hourPins[i]);
    }
-  for (i = 0; i < (sizeof(minutePins)/sizeof(int)) - 1; i++){
+  for (i = 0; i < (sizeof(minutePins)/sizeof(int)) ; i++){
     initOutputPin(minutePins[i]);
    }
   initOutputPin(secondPin);
+  Timer1.initialize(1000000);
+  Timer1.attachInterrupt(clockTick);
 }
 
 void loop() {
-  toggleSecondPin();
-  delay(1000);
-  if (ticks < 60){
-    ticks++;  
-  } else {
-    if (minutes < 60) {
-      minutes++;  
-    } else {
-      minutes = 0;
-      if (hours < 24) {
-       hours++;
-      }else{
-         hours = 0;
-       }
-      }
-    }
-   ticks = 0; 
   
+}
+
+void clockTick(){
+  toggleSecondPin();
+  ticks++;  
+  if (ticks >= 60){
+    ticks = 0; 
+    minutes++;
+    if (minutes >= 60) {
+      minutes = 0;
+      hours++;
+      if (hours >= 24) {
+       hours = 0;
+      }
+     }
+   }
+   updateClockDisplay();
+}
+
+void updateClockDisplay(){
+  String binMinutes = String(minutes, BIN);
+  String binHours = String(hours, BIN);
+  
+  //TODO: general function for looping these arrays
+  for (int i = 0; i < 4; i++){
+    if (binMinutes[i] == '1'){
+      pinOn(minutePins[i]);
+    } else {
+      pinOff(minutePins[i]); 
+    }
+  }
+  for (int i = 0; i < 5; i++){
+    if (binHours[i] == '1'){
+      pinOn(hourPins[i]);
+    } else {
+      pinOff(hourPins[i]); 
+    }
+  }
 }
 
 void toggleSecondPin(){
@@ -62,6 +84,6 @@ void pinOn(int pinNumber){
 void initOutputPin(int pinNumber){
      pinMode(pinNumber, OUTPUT);
      pinOn(pinNumber);
-     delay(100);
+     delay(130);
      pinOff(pinNumber);
 }
