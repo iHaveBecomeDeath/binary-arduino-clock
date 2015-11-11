@@ -5,6 +5,8 @@ int hours = 0;
 const int hourPins[] = {2, 3, 4, 5};
 const int minutePins[] = {7, 8, 9, 10, 11};
 const int secondPin = 12;
+const long int lengthOfSecond = 5000; // 1 000 000 is "normal"
+const bool blinkSecondPin = false;
 int amountOfMinutePins = 0;
 int amountOfHourPins = 0;
 
@@ -19,7 +21,7 @@ void setup() {
     initOutputPin(minutePins[i]);
    }
   initOutputPin(secondPin);
-  Timer1.initialize(1000000);
+  Timer1.initialize(lengthOfSecond);
   Timer1.attachInterrupt(clockTick);
 }
 
@@ -28,20 +30,19 @@ void loop() {
 }
 
 void clockTick(){
-  toggleSecondPin();
-  ticks++;  
-  if (ticks >= 60){
+  if (blinkSecondPin){
+    toggleSecondPin();
+  }
+   updateClockDisplay();
+  if (++ticks >= 60){
     ticks = 0; 
-    minutes++;
-    if (minutes >= 60) {
+    if (++minutes >= 60) {
       minutes = 0;
-      hours++;
-      if (hours >= 24) {
+      if (++hours >= 24) {
        hours = 0;
       }
      }
    }
-   updateClockDisplay();
 }
 
 void updateClockDisplay(){
@@ -60,7 +61,7 @@ void updateClockDisplay(){
   }
   binLength = binHours.length();
   for (int i = 0; i < amountOfHourPins; i++){
-    if (binLength <= amountOfHourPins && binHours[i] == '1'){
+    if (binLength <= amountOfHourPins  && binHours[i] == '1'){
       pinOn(hourPins[i]);
     } else {
       pinOff(hourPins[i]); 
