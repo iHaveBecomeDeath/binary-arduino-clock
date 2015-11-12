@@ -16,10 +16,10 @@ void setup() {
   int i;
   for (i = 0; i < amountOfHourPins ; i++){
     initOutputPin(hourPins[i]);
-   }
+  }
   for (i = 0; i < amountOfMinutePins ; i++){
     initOutputPin(minutePins[i]);
-   }
+  }
   initOutputPin(secondPin);
   Timer1.initialize(lengthOfSecond);
   Timer1.attachInterrupt(clockTick);
@@ -33,7 +33,6 @@ void clockTick(){
   if (blinkSecondPin){
     toggleSecondPin();
   }
-   updateClockDisplay();
   if (++ticks >= 60){
     ticks = 0; 
     if (++minutes >= 60) {
@@ -43,17 +42,17 @@ void clockTick(){
       }
      }
    }
+   updateClockDisplay();
 }
 
 void updateClockDisplay(){
-  String binMinutes = String(minutes, BIN);
+  String binMinutes = getTimeArray(minutes, amountOfMinutePins);
   String binHours = String(hours, BIN);
   int binLength;
   
   //TODO: general function for looping these arrays
-  binLength = binMinutes.length();
   for (int i = 0; i < amountOfMinutePins; i++){
-    if (binLength <= amountOfMinutePins && binMinutes[i] == '1'){
+    if (binMinutes[i] == '1'){
       pinOn(minutePins[i]);
     } else {
       pinOff(minutePins[i]); 
@@ -61,12 +60,28 @@ void updateClockDisplay(){
   }
   binLength = binHours.length();
   for (int i = 0; i < amountOfHourPins; i++){
-    if (binLength <= amountOfHourPins  && binHours[i] == '1'){
+    if (binLength < amountOfHourPins  && binHours[amountOfHourPins-i-1] == '1'){
       pinOn(hourPins[i]);
     } else {
       pinOff(hourPins[i]); 
     }
   }
+}
+
+String getTimeArray(int timespan, int numberOfObjects){
+  String temp = String(timespan, BIN);
+  char retArr[numberOfObjects+1];
+  int binLength = temp.length();
+  
+  for (int i = 0; i < numberOfObjects; i++){
+    if (binLength <= i) {
+      retArr[i] = temp[i];
+    } else {  
+      retArr[i] = '0';
+    }
+  }
+  
+  return String(retArr);
 }
 
 void toggleSecondPin(){
