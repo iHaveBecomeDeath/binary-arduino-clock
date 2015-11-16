@@ -1,10 +1,10 @@
 #include "Time.h"
-const int hourPins[] = {2, 3, 4, 5};
-const int minutePins[] = {7, 8, 9, 10, 11};
-const int secondPin = 12;
+const int hourPins[] = {2, 3, 4, 5, 6};
+const int minutePins[] = {7, 8, 9, 10, 11, 12};
+const int secondPin = 13;
 const bool blinkSecondPin = false;
-int amountOfMinutePins = 5;
-int amountOfHourPins = 4;
+int amountOfMinutePins = 6;
+int amountOfHourPins = 5;
 int previousSecond = 0;
 int previousMinute = 0;
 int previousHour = 0;
@@ -19,7 +19,7 @@ void setup() {
     initOutputPin(minutePins[i]);
    }
   initOutputPin(secondPin);
-  setTime(1, 5, 55, 1, 1, 1999); 
+  setTime(1, 22, 55, 1, 1, 1999); // For testing. Should probably initialize to 0,0,0. Or get from NTP or what not.
 }
 
 void loop() {
@@ -27,11 +27,12 @@ void loop() {
     if ((previousSecond < curSec) ||  (previousSecond > curSec && previousSecond == 59)){
       toggleSecondPin();
       previousSecond = curSec;
-      updateMinutes(curSec);
+      updateMinutes(curSec); // Only for testing, minutes are slow :)
     } 
   int curMin = minute();
   if (previousMinute < curMin || (previousMinute > curMin && previousMinute == 59)){
-    updateMinutes(curMin);
+    //updateMinutes(curMin);
+    updateHours(curMin); // Only for testing, hours are slow :)
     previousMinute = curMin;
   }  
   int curHr = hour();
@@ -55,89 +56,33 @@ void updateMinutes(int mins){
   for (int j = 0; j < bm.length(); j++){
    if (bm.charAt(j) == '1'){
      pinOn(minutePins[j]);
-    Serial.println("pin on: " + minutePins[j]);
    } else {
      pinOff(minutePins[j]);
-    Serial.println("pin off: " + minutePins[j]);
    }
   }
 }
 
 void updateHours(int hrs){
+  String bh = String(hrs, BIN);
+  if (bh.length() < amountOfHourPins){
+   for (int i = bh.length(); i < amountOfHourPins; i++){
+     bh = '0' + bh;
+   } 
+  }
   
+  for (int j = 0; j < bh.length(); j++){
+   if (bh.charAt(j) == '1'){
+     pinOn(hourPins[j]);
+   } else {
+     pinOff(hourPins[j]);
+   }
+  }  
 }
-//void clockTick(){
-////  ticks++;
-////  if (ticks == 60){
-////    ticks = 0;
-////  }
-////  if (ticks == 0){
-////    minutes++;
-////  }
-////  if (minutes == 60){
-////    minutes = 0;
-////  }
-////  if (minutes == 0){
-////    hours++;
-////  }
-////  if (hours == 24){
-////    hours = 0;
-////  }
-////  Serial.println("Ticks: ");
-//// Serial.println(ticks);
-//  if (++ticks == 60){
-//    ticks = 0; 
-////  Serial.println("Mins: ");
-//// Serial.println(minutes);
-//    if (++minutes == 60) {
-//      minutes = 0;
-////  Serial.println("Hrs: ");
-//// Serial.println(hours);
-//      if (++hours == 24) {
-//       hours = 0;
-//      }
-//     }
-//   }
-//  updateClockDisplay();
-//}
-//
-//void updateClockDisplay(){
-//  if (blinkSecondPin){
-//    toggleSecondPin();
-//  }
-////  String mins = String(minutes, BIN);
-////  int i;
-////  
-////  for (i = mins.length() i >0; i--){
-////    
-////  }
-//  String binMinutes = String(minutes, BIN);
-//  String binHours = String(hours, BIN);
-//  int binLength;
-//  int i;
-//  
-//  //TODO: general function for looping these arrays
-//  binLength = binMinutes.length();
-//  for (i = 0; i < amountOfMinutePins; i++){
-//    if (binLength <= amountOfMinutePins && binMinutes.charAt(i) == '1'){
-//      pinOn(minutePins[i]);
-//    } else {
-//      pinOff(minutePins[i]); 
-//    }
-//  }
-//
-//  binLength = binHours.length();
-//  for (i = 0; i <= amountOfHourPins; i++){
-//    if (binLength <= amountOfHourPins  && binHours.charAt(i) == '1'){
-//      pinOn(hourPins[i]);
-//    } else {
-//      pinOff(hourPins[i]); 
-//    }
-//  }
-//}
 
 void toggleSecondPin(){
-  togglePin(secondPin);
+  if (blinkSecondPin){
+    togglePin(secondPin);
+  }
 }
 
 void togglePin(int pinNumber){
