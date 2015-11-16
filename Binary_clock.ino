@@ -20,6 +20,8 @@ void setup() {
    }
   initOutputPin(secondPin);
   setTime(1, 22, 55, 1, 1, 1999); // For testing. Should probably initialize to 0,0,0. Or get from NTP or what not.
+  updateMinutes(minute());
+  updateHours(hour());
 }
 
 void loop() {
@@ -27,12 +29,12 @@ void loop() {
     if ((previousSecond < curSec) ||  (previousSecond > curSec && previousSecond == 59)){
       toggleSecondPin();
       previousSecond = curSec;
-      updateMinutes(curSec); // Only for testing, minutes are slow :)
+      //updateMinutes(curSec); // Only for testing, minutes are slow :)
     } 
   int curMin = minute();
   if (previousMinute < curMin || (previousMinute > curMin && previousMinute == 59)){
-    //updateMinutes(curMin);
-    updateHours(curMin); // Only for testing, hours are slow :)
+    updateMinutes(curMin);
+    //updateHours(curMin); // Only for testing, hours are slow :)
     previousMinute = curMin;
   }  
   int curHr = hour();
@@ -103,6 +105,6 @@ void pinOn(int pinNumber){
 void initOutputPin(int pinNumber){
      pinMode(pinNumber, OUTPUT);
      pinOn(pinNumber);
-     delay(130);
+     delay(120);
      pinOff(pinNumber);
 }
