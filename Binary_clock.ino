@@ -19,23 +19,23 @@ void setup() {
     initOutputPin(minutePins[i]);
    }
   initOutputPin(secondPin);
-  setTime(1, 5, 10, 1, 1, 1999); 
+  setTime(1, 5, 55, 1, 1, 1999); 
 }
 
 void loop() {
   int curSec = second();
-    if ((previousSecond < curSec) ||  (previousSecond == 60)){
+    if ((previousSecond < curSec) ||  (previousSecond > curSec && previousSecond == 59)){
       toggleSecondPin();
       previousSecond = curSec;
       updateMinutes(curSec);
     } 
   int curMin = minute();
-  if (previousMinute < curMin || previousMinute == 60){
+  if (previousMinute < curMin || (previousMinute > curMin && previousMinute == 59)){
     updateMinutes(curMin);
     previousMinute = curMin;
   }  
   int curHr = hour();
-  if (previousHour < curHr || previousHour == 24){
+  if (previousHour < curHr || (previousHour > curHr && previousHour == 24)){
     updateHours(curHr);
     previousHour = curHr; 
   }
@@ -43,6 +43,7 @@ void loop() {
 
 void updateMinutes(int mins){
   String bm = String(mins, BIN);
+  Serial.println("orig bm: " + bm + ", mins: " + mins);
   if (bm.length() < amountOfMinutePins){
    for (int i = bm.length(); i < amountOfMinutePins; i++){
      bm = '0' + bm;
@@ -54,11 +55,14 @@ void updateMinutes(int mins){
   for (int j = 0; j < bm.length(); j++){
    if (bm.charAt(j) == '1'){
      pinOn(minutePins[j]);
+    Serial.println("pin on: " + minutePins[j]);
    } else {
      pinOff(minutePins[j]);
+    Serial.println("pin off: " + minutePins[j]);
    }
   }
 }
+
 void updateHours(int hrs){
   
 }
