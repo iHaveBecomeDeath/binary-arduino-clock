@@ -2,7 +2,7 @@
 const int hourPins[] = {2, 3, 4, 5, 6};
 const int minutePins[] = {7, 8, 9, 10, 11, 12};
 const int secondPin = 13;
-const bool blinkSecondPin = false;
+const bool blinkSecondPin = true;
 int amountOfMinutePins = 6;
 int amountOfHourPins = 5;
 int previousSecond = 0;
@@ -10,7 +10,7 @@ int previousMinute = 0;
 int previousHour = 0;
 
 void setup() {
-  Serial.begin(9600);
+ // Serial.begin(9600);
   int i;
   for (i = 0; i < amountOfHourPins ; i++){
     initOutputPin(hourPins[i]);
@@ -46,14 +46,14 @@ void loop() {
 
 void updateMinutes(int mins){
   String bm = String(mins, BIN);
-  Serial.println("orig bm: " + bm + ", mins: " + mins);
+  //Serial.println("orig bm: " + bm + ", mins: " + mins);
   if (bm.length() < amountOfMinutePins){
    for (int i = bm.length(); i < amountOfMinutePins; i++){
      bm = '0' + bm;
    } 
   }
   
-  Serial.println("bm: " + bm);
+  //Serial.println("bm: " + bm);
   
   for (int j = 0; j < bm.length(); j++){
    if (bm.charAt(j) == '1'){
