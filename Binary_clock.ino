@@ -1,3 +1,5 @@
+#include <Wire.h>
+
 #include "Time.h"
 const int hourPins[] = {2, 3, 4, 5, 6};
 const int minutePins[] = {7, 8, 9, 10, 11, 12};
