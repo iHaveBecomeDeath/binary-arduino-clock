@@ -2,7 +2,7 @@
 #include <TimeLib.h>
 #include <DS1307RTC.h>
 #include <Wire.h>
-#define DS3231_I2C_ADDRESS 0x68
+
 const int hourPins[] = {2, 3, 4, 5, 6};
 const int minutePins[] = {7, 8, 9, 10, 11, 12};
 const int secondPin = 13;
@@ -14,8 +14,7 @@ int previousMinute = 0;
 int previousHour = 0;
 
 void setup() {
-  Wire.begin();
-  setSyncProvider(getRTCTime());
+  setSyncProvider(RTC.get);
   setSyncInterval(100);
 
   int i;
@@ -35,7 +34,6 @@ void loop() {
     if ((previousSecond < curSec) ||  (previousSecond > curSec && previousSecond == 59)){
       toggleSecondPin();
       previousSecond = curSec;
-      displayTime();
     } 
   int curMin = minute();
   if (previousMinute < curMin || (previousMinute > curMin && previousMinute == 59)){
@@ -111,61 +109,3 @@ void initOutputPin(int pinNumber){
      pinOff(pinNumber);
 }
 
-time_t getRTCTime(){
-  TimeElements tm
-  return makeTime(tm);
-Convert normal date & time to a time_t number. The time_t number is returned. The tm input is a TimeElements variable type, which has these fields:
-tm.Second  Seconds   0 to 59
-tm.Minute  Minutes   0 to 59
-tm.Hour    Hours     0 to 23
-tm.Wday    Week Day  0 to 6  (not needed for mktime)
-tm.Day     Day       1 to 31
-tm.Month   Month     1 to 12
-tm.Year    Year      0 to 99 (offset from 1970)
-};
-
-/***********/
-/* RTC stuff for rs3231 */
-/* borrowed with thanks from tronixstuff.com */
-/**********/
-
-// Convert normal decimal numbers to binary coded decimal
-byte decToBcd(byte val)
-{
-  return( (val/10*16) + (val%10) );
-}
-// Convert binary coded decimal to normal decimal numbers
-byte bcdToDec(byte val)
-{
-  return( (val/16*10) + (val%16) );
-}
-
-void setDS3231time(byte second, byte minute, byte hour, byte dayOfWeek, byte dayOfMonth, byte month, byte year)
-{
-  Wire.beginTransmission(DS3231_I2C_ADDRESS);
-  Wire.write(0); // set next input to start at the seconds register
-  Wire.write(decToBcd(second)); // set seconds
-  Wire.write(decToBcd(minute)); // set minutes
-  Wire.write(decToBcd(hour)); // set hours
-  Wire.write(decToBcd(dayOfWeek)); // set day of week (1=Sunday, 7=Saturday)
-  Wire.write(decToBcd(dayOfMonth)); // set date (1 to 31)
-  Wire.write(decToBcd(month)); // set month
-  Wire.write(decToBcd(year)); // set year (0 to 99)
-  Wire.endTransmission();
-}
-
-void readDS3231time(byte *second, byte *minute, byte *hour, byte *dayOfWeek, byte *dayOfMonth, byte *month, byte *year)
-{
-  Wire.beginTransmission(DS3231_I2C_ADDRESS);
-  Wire.write(0); // set DS3231 register pointer to 00h
-  Wire.endTransmission();
-  Wire.requestFrom(DS3231_I2C_ADDRESS, 7);
-  // request seven bytes of data from DS3231 starting from register 00h
-  *second = bcdToDec(Wire.read() & 0x7f);
-  *minute = bcdToDec(Wire.read());
-  *hour = bcdToDec(Wire.read() & 0x3f);
-  *dayOfWeek = bcdToDec(Wire.read());
-  *dayOfMonth = bcdToDec(Wire.read());
-  *month = bcdToDec(Wire.read());
-  *year = bcdToDec(Wire.read());
-}
