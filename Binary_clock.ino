@@ -1,5 +1,7 @@
+#include <Time.h>
+#include <TimeLib.h>
+#include <DS1307RTC.h>
 #include <Wire.h>
-#include "Time.h"
 #define DS3231_I2C_ADDRESS 0x68
 const int hourPins[] = {2, 3, 4, 5, 6};
 const int minutePins[] = {7, 8, 9, 10, 11, 12};
@@ -109,6 +111,18 @@ void initOutputPin(int pinNumber){
      pinOff(pinNumber);
 }
 
+time_t getRTCTime(){
+  TimeElements tm
+  return makeTime(tm);
+Convert normal date & time to a time_t number. The time_t number is returned. The tm input is a TimeElements variable type, which has these fields:
+tm.Second  Seconds   0 to 59
+tm.Minute  Minutes   0 to 59
+tm.Hour    Hours     0 to 23
+tm.Wday    Week Day  0 to 6  (not needed for mktime)
+tm.Day     Day       1 to 31
+tm.Month   Month     1 to 12
+tm.Year    Year      0 to 99 (offset from 1970)
+};
 
 /***********/
 /* RTC stuff for rs3231 */
