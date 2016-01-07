@@ -41,7 +41,7 @@ void loop() {
     previousMinute = curMin;
   }  
   int curHr = hour();
-  if (previousHour < curHr || (previousHour > curHr && previousHour == 24)){
+  if (previousHour < curHr || (previousHour > curHr && previousHour == 23)){
     updateHours(curHr);
     previousHour = curHr; 
   }
