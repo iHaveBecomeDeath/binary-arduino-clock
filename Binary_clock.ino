@@ -1,4 +1,8 @@
-#include "Time.h"
+#include <Time.h>
+#include <TimeLib.h>
+#include <DS1307RTC.h>
+#include <Wire.h>
+
 const int hourPins[] = {2, 3, 4, 5, 6};
 const int minutePins[] = {7, 8, 9, 10, 11, 12};
 const int secondPin = 13;
@@ -10,7 +14,9 @@ int previousMinute = 0;
 int previousHour = 0;
 
 void setup() {
- // Serial.begin(9600);
+  setSyncProvider(RTC.get);
+  setSyncInterval(100);
+
   int i;
   for (i = 0; i < amountOfHourPins ; i++){
     initOutputPin(hourPins[i]);
@@ -19,7 +25,6 @@ void setup() {
     initOutputPin(minutePins[i]);
    }
   initOutputPin(secondPin);
-  setTime(1, 22, 55, 1, 1, 1999); // For testing. Should probably initialize to 0,0,0. Or get from NTP or what not.
   updateMinutes(minute());
   updateHours(hour());
 }
@@ -29,16 +34,14 @@ void loop() {
     if ((previousSecond < curSec) ||  (previousSecond > curSec && previousSecond == 59)){
       toggleSecondPin();
       previousSecond = curSec;
-      //updateMinutes(curSec); // Only for testing, minutes are slow :)
     } 
   int curMin = minute();
   if (previousMinute < curMin || (previousMinute > curMin && previousMinute == 59)){
     updateMinutes(curMin);
-    //updateHours(curMin); // Only for testing, hours are slow :)
     previousMinute = curMin;
   }  
   int curHr = hour();
-  if (previousHour < curHr || (previousHour > curHr && previousHour == 24)){
+  if (previousHour < curHr || (previousHour > curHr && previousHour == 23)){
     updateHours(curHr);
     previousHour = curHr; 
   }
@@ -46,14 +49,11 @@ void loop() {
 
 void updateMinutes(int mins){
   String bm = String(mins, BIN);
-  //Serial.println("orig bm: " + bm + ", mins: " + mins);
   if (bm.length() < amountOfMinutePins){
    for (int i = bm.length(); i < amountOfMinutePins; i++){
      bm = '0' + bm;
    } 
   }
-  
-  //Serial.println("bm: " + bm);
   
   for (int j = 0; j < bm.length(); j++){
    if (bm.charAt(j) == '1'){
@@ -108,3 +108,4 @@ void initOutputPin(int pinNumber){
      delay(120);
      pinOff(pinNumber);
 }
+
