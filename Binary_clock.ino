@@ -3,11 +3,11 @@
 #include <DS1307RTC.h>
 #include <Wire.h>
 
-const int hourPins[] = {2, 3, 4, 5, 6};
-const int minutePins[] = {7, 8, 9, 14, 15, 16};
-const int secondRed = 10;
-const int secondGreen = 11;
-const int secondBlue = 12;
+const int hourPins[] = {6, 5, 4, 3, 2};
+const int minutePins[] = {A1, A0, 13, 12, 8, 7};
+const int secondRed = 9;
+const int secondGreen = 10;
+const int secondBlue = 11;
 const bool blinkSecondPins = true;
 int amountOfMinutePins = 6;
 int amountOfHourPins = 5;
@@ -21,10 +21,10 @@ void setup() {
   setSyncInterval(100);
 
   int i;
-  for (i = 0; i < amountOfHourPins ; i++){
+  for (i = 0; i < amountOfHourPins; i++){
     initOutputPin(hourPins[i]);
    }
-  for (i = 0; i < amountOfMinutePins ; i++){
+  for (i = 0; i < amountOfMinutePins; i++){
     initOutputPin(minutePins[i]);
    }
   pinMode(secondRed, OUTPUT);
@@ -102,6 +102,7 @@ void updateSecondColor(int seconds){
   int blue = 0;
   if (seconds <= 21){
     blue = seconds*2;
+    green = 21 - seconds;
   } else if (seconds <= 41){
     red = seconds;
     blue = 41 - seconds;
