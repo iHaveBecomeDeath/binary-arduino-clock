@@ -5,9 +5,12 @@ The clock itself is relatively simple, housed in a wooden frame, but I've made s
 
 Requirements: 
 - Arduino
-- [Timer1 library](http://playground.arduino.cc/Code/Timer1)
+- [Time library](https://github.com/PaulStoffregen/Time)
 - 11 little LEDs (12 if you want a light for seconds passing as well)
+- An RTC module (if you want things to be accurate), 1307, 3231 or anything similar will do
 - lots of little cables
 - preferrably a breadboard
+
+![Fritzing breadboard layout](https://ibb.co/eXKRM5)
 
 Future modifications include RTC module and buttons for settings, possibly an LCD display for human readable time. Using the timer library NTP support should be doable, or 433mhz setting of time, if other requirements are fulfilled.
