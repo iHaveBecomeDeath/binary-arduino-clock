@@ -100,15 +100,13 @@ void updateSecondColor(int seconds){
   int red = 0;
   int green = 0;
   int blue = 0;
+  // Here we want a nice transition of color as time passes, but right now we just show primary colors for 20s
   if (seconds <= 21){
-    blue = seconds*2;
-    green = 21 - seconds;
+    red = 10;
   } else if (seconds <= 41){
-    red = seconds;
-    blue = 41 - seconds;
+    green = 10;
   } else {
-    red = 60 - seconds;
-    green = seconds;
+    blue = 5;
   }
    Serial.print("Second: ");
    Serial.print(seconds);
